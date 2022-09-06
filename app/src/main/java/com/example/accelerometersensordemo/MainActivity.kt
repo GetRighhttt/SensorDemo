@@ -26,7 +26,14 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         createSensorInfo()
     }
 
+    /*
+    Determine what to do with each sensor.
+
+    In this case, we're just testing for the accelerometer.
+     */
     private fun createSensorInfo() {
+
+        // get an instance of system service
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
 
         sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)?.also {
@@ -50,6 +57,9 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
             val sides = event.values[0]
             val upDown = event.values[1]
 
+            /*
+            Set the rotation limits for the sensor
+             */
             rotationTV.apply {
                 rotationX = upDown * 3f
                 rotationY = sides * 3f
@@ -58,9 +68,15 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
                 translationY = upDown * 10
             }
 
+            /*
+            Switch the color based on the device orientation
+             */
             val color = if(upDown.toInt() == 0 && sides.toInt() == 0) Color.RED else Color.BLUE
             rotationTV.setBackgroundColor(color)
 
+            /*
+            Use String interpolation to update the textview
+             */
             rotationTV.text = "up/down ${upDown.toInt()} \nleft/right ${sides.toInt()}"
         }
     }
@@ -69,6 +85,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         return
     }
 
+    // unregister the listener when activity is destroyed
     override fun onDestroy() {
         sensorManager.unregisterListener(this)
         super.onDestroy()
